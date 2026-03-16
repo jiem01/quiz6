@@ -1,26 +1,28 @@
 import React, { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { Container, Row, Col, Card, Button, Spinner, Alert } from 'react-bootstrap'
+import { useParams, useNavigate } from 'react-router-dom'
 import axios from '../axios'
-import { Container, Row, Col, Image, Spinner, Alert } from 'react-bootstrap'
 
 const DetailScreen = () => {
   const { id } = useParams()
+  const navigate = useNavigate()
   const [service, setService] = useState(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
-  useEffect(() => {
-    const fetchService = async () => {
-      try {
-        setLoading(true)
-        const { data } = await axios.get(`services/${id}/`)
-        setService(data)
-        setLoading(false)
-      } catch (err) {
-        setError(err.response?.data?.detail || err.message)
-        setLoading(false)
-      }
+  const fetchService = async () => {
+    try {
+      setLoading(true)
+      const { data } = await axios.get(`services/${id}/`)
+      setService(data)
+      setLoading(false)
+    } catch (err) {
+      setError(err.response?.data?.detail || err.message)
+      setLoading(false)
     }
+  }
+
+  useEffect(() => {
     fetchService()
   }, [id])
 
@@ -30,19 +32,30 @@ const DetailScreen = () => {
 
   return (
     <Container className="my-4">
-      <Row>
-        <Col md={6}>
-          <Image src={service.sample_image} alt={service.service_name} fluid />
-        </Col>
-        <Col md={6}>
-          <h2>{service.service_name}</h2>
-          <p>{service.description}</p>
-          <p>Rating: {service.rating || 'N/A'}</p>
-          <p>Price: ${service.price}</p>
-          <p>Duration: {service.duration_of_service}</p>
-          <p>Expert: {service.seller?.username || 'Unknown'}</p>
-        </Col>
-      </Row>
+      <Button variant="secondary" onClick={() => navigate(-1)} className="mb-3">
+        Back
+      </Button>
+      <Card>
+        <Row>
+          <Col md={6}>
+            <Card.Img 
+              src={service.sample_image || 'https://via.placeholder.com/500x300'} 
+              alt={service.service_name} 
+              style={{ height: '100%', objectFit: 'cover' }}
+            />
+          </Col>
+          <Col md={6}>
+            <Card.Body>
+              <Card.Title>{service.service_name}</Card.Title>
+              <Card.Text><strong>Description:</strong> {service.description}</Card.Text>
+              <Card.Text><strong>Rating:</strong> {service.rating || 'N/A'}</Card.Text>
+              <Card.Text><strong>Price:</strong> ${service.price}</Card.Text>
+              <Card.Text><strong>Duration:</strong> {service.duration_of_service} mins</Card.Text>
+              <Card.Text><strong>Expert:</strong> {service.seller?.username || 'Unknown'}</Card.Text>
+            </Card.Body>
+          </Col>
+        </Row>
+      </Card>
     </Container>
   )
 }
