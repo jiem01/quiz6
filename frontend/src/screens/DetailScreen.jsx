@@ -57,7 +57,7 @@ const DetailScreen = () => {
           onApprove: async function (data, actions) {
   const details = await actions.order.capture()
   try {
-    console.log({ buyer: userInfo.id, service: service.id, paypal_transaction_id: details.id, price_paid: service.price })
+    console.log({ buyer: userInfo.user.id, service: service.id, paypal_transaction_id: details.id, price_paid: service.price })
     await axios.post(
   '/orders/create/',
   {
@@ -113,8 +113,8 @@ const DetailScreen = () => {
                 <Card.Text><strong>Description:</strong> {service.description}</Card.Text>
                 <Card.Text><strong>Rating:</strong> {service.rating || 'N/A'}</Card.Text>
                 <Card.Text><strong>Price:</strong> ${service.price}</Card.Text>
-                <Card.Text><strong>Duration:</strong> {service.duration_of_service} mins</Card.Text>
-                <Card.Text><strong>Expert:</strong> {service.seller?.username || 'Unknown'}</Card.Text>
+                <Card.Text><strong>Duration:</strong> {service.duration_of_service}</Card.Text>
+                <Card.Text><strong>Expert:</strong> {service.seller?.username || 'Expert to'}</Card.Text>
                 {userInfo && userInfo.role !== 'Admin' && (
                   <div id="paypal-button-container" className="mt-3"></div>
                 )}
