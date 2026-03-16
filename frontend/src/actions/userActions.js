@@ -13,6 +13,7 @@ export const login = (email, password) => async (dispatch) => {
   try {
     dispatch({ type: USER_LOGIN_REQUEST })
     const { data } = await axios.post('users/login/', { email, password })
+    console.log('Login response data:', data)  // <-- added console log
     dispatch({ type: USER_LOGIN_SUCCESS, payload: data })
     localStorage.setItem('userInfo', JSON.stringify(data))
   } catch (error) {
@@ -35,6 +36,7 @@ export const register = (userData) => async (dispatch) => {
   try {
     dispatch({ type: USER_REGISTER_REQUEST })
     const { data } = await axios.post('users/register/', userData)
+    console.log('Register response data:', data)  // <-- added console log
     dispatch({ type: USER_REGISTER_SUCCESS, payload: data })
     dispatch({ type: USER_LOGIN_SUCCESS, payload: data })
     localStorage.setItem('userInfo', JSON.stringify(data))

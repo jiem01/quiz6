@@ -55,24 +55,28 @@ const DetailScreen = () => {
             })
           },
           onApprove: async function (data, actions) {
-            const details = await actions.order.capture()
-            try {
-              await axios.post(
-                'orders/create/',
-                {
-                  buyer: userInfo.id,
-                  service: service.id,
-                  paypal_transaction_id: details.id,
-                  price_paid: service.price
-                },
-                {
-                  headers: { Authorization: `Bearer ${userInfo.access}` }
-                }
-              )
-              setSuccess(true)
-            } catch (err) {
-              setError(err.response?.data?.detail || err.message)
-            }
+  const details = await actions.order.capture()
+  try {
+    console.log({ buyer: userInfo.id, service: service.id, paypal_transaction_id: details.id, price_paid: service.price })
+    await axios.post(
+  '/orders/create/',
+  {
+    buyer: userInfo.user.id,        // <--- nested inside user
+    service: service.id,
+    paypal_transaction_id: details.id,
+    price_paid: parseFloat(service.price)
+  },
+  {
+    headers: {
+      Authorization: `Bearer ${userInfo.access}`,
+      'Content-Type': 'application/json'
+    }
+  }
+)
+    setSuccess(true)
+  } catch (err) {
+    setError(err.response?.data?.detail || err.message)
+  }
           },
           onError: function (err) {
             setError(err.toString())
